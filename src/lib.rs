@@ -5,7 +5,8 @@
 //! `tables/README.md` for the schema, the KMK sources, and the validity
 //! rules); `tests/vectors/*.json` is the executable contract every
 //! language port runs. The Typst module in `typst/` derives from the same
-//! table.
+//! table; [`typst`] embeds its package files for Rust hosts that run Typst
+//! in-process.
 //!
 //! Foreign → German follows the official modified Bavarian formula (KMK
 //! Beschluss, "es wird nicht gerundet"):
@@ -18,6 +19,8 @@
 
 use std::collections::{HashMap, HashSet};
 use std::sync::LazyLock;
+
+pub mod typst;
 
 #[derive(serde::Deserialize)]
 struct ScaleEntry {
@@ -130,7 +133,7 @@ pub fn bavarian_from_de(nmax: f64, nmin: f64, x: f64) -> Option<f64> {
     if nmax == nmin {
         return None;
     }
-    if x < 1.0 || x > 4.0 {
+    if !(1.0..=4.0).contains(&x) {
         return None;
     }
     let (nmax_t, nmin_t, x_t) = (thousandths(nmax), thousandths(nmin), thousandths(x));

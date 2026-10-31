@@ -3,6 +3,20 @@
 All notable changes to `cgrade` are documented here. The project follows
 Semantic Versioning.
 
+## 0.1.3 - 2026-10-31
+
+- The Rust crate ships the Typst package (`typst.toml`, `typst/**`) and
+  exposes it as data in the new `cgrade::typst` module: `NAMESPACE`,
+  `NAME`, `VERSION`, `spec()` (`@preview/cgrade:<version>`), and `FILES`
+  (package-relative paths with their bytes, sorted by path). Rust hosts
+  that embed Typst can register the package from the crate, so Rust and
+  Typst come from the same release. No new dependencies.
+- A Rust test checks `FILES` against the files on disk and `typst.toml`'s
+  name and version against the crate; `scripts/check-versions.py` also
+  requires the Typst package name and files in the crate package.
+- `bavarian_from_de` writes its German-range guard as a range check for
+  current Clippy (`manual_range_contains`); behavior is unchanged.
+
 ## 0.1.2 - 2026-09-25
 
 - `jsr.json` declares the bare SPDX id `LGPL-3.0-only`; JSR rejected the

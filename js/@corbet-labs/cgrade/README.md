@@ -68,7 +68,7 @@ Only passing grades convert: `Nd` outside `[pass .. best]` (in that system's ori
 | Bun | `bun add @corbet-labs/cgrade` |
 | Deno | `deno add npm:@corbet-labs/cgrade` |
 
-The 0.1.2 JavaScript distribution includes compiled ESM, CommonJS,
+The 0.1.3 JavaScript distribution includes compiled ESM, CommonJS,
 TypeScript declarations, and a standalone browser module. Node.js 20+ is
 supported; no TypeScript loader is required.
 
@@ -79,13 +79,13 @@ const { toDe } = require('@corbet-labs/cgrade');
 
 ```html
 <script type="module">
-  import { toDe } from 'https://cdn.jsdelivr.net/npm/@corbet-labs/cgrade@0.1.2/dist/browser.js';
+  import { toDe } from 'https://cdn.jsdelivr.net/npm/@corbet-labs/cgrade@0.1.3/dist/browser.js';
   console.log(toDe('ch', 5.5));
 </script>
 ```
 
 ```typst
-#import "@preview/cgrade:0.1.2": to-de, format-grade, parse-grade
+#import "@preview/cgrade:0.1.3": to-de, format-grade, parse-grade
 
 #to-de("ch", 5.5)
 // 1.7
@@ -108,6 +108,28 @@ assert_eq!(from_de("fr", 2.5), Some(15.0));
 assert_eq!(parse_grade("6,0"), Some(6.0));
 assert_eq!(format_grade(6.0, 1).as_deref(), Some("6.0"));
 ```
+
+### Typst in Rust hosts
+
+The crate also ships the Typst package. Applications that embed the Typst
+compiler can register it from `cgrade::typst` instead of downloading or
+vendoring a copy, so Rust and Typst always come from the same release.
+`FILES` holds package-relative paths (`typst.toml`, `typst/grade.typ`, …)
+with their bytes; `spec()` is the import specification.
+
+```rust
+use cgrade::typst::{FILES, NAME, NAMESPACE, VERSION, spec};
+
+assert_eq!((NAMESPACE, NAME), ("preview", "cgrade"));
+assert_eq!(spec(), format!("@preview/cgrade:{VERSION}"));
+for (path, bytes) in FILES {
+    // Serve `bytes` for `path` inside the package `spec()` in your Typst world.
+    let _ = (path, bytes.len());
+}
+```
+
+Documents then import the package as usual, for example
+`#import "@preview/cgrade:0.1.3": to-de`.
 
 ## Python
 
@@ -168,14 +190,14 @@ for generation, verification, and publication commands.
 
 ## License
 
-Copyright 2026 Julian Y. Richard Corbet. The 0.1.2 release line is licensed
+Copyright 2026 Julian Y. Richard Corbet. The 0.1.3 release line is licensed
 under [LGPL-3.0-only](https://github.com/corbet-foss/cgrade/blob/main/LICENSES/LGPL-3.0-only.txt)
 [WITH LGPL-3.0-linking-exception](https://github.com/corbet-foss/cgrade/blob/main/LICENSES/LGPL-3.0-linking-exception.txt),
 with the incorporated [GPL version 3](https://github.com/corbet-foss/cgrade/blob/main/LICENSES/GPL-3.0-only.txt).
 Combined works may link statically or dynamically without relinking duties;
 library modifications stay LGPL. Applications can use a different license
 subject to the LGPL's conditions.
-This is the first release line; 0.1.2 is published to registries.
+This is the first release line; 0.1.3 is published to registries.
 
 See the [licensing notes](https://github.com/corbet-foss/cgrade/blob/main/LICENSE.md) for distribution conditions and retained notices.
 Contributions are subject to the [Contributor License Agreement](CLA.md).
